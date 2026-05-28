@@ -1,8 +1,10 @@
 import asyncio
 import os
+import random
 from datetime import datetime
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
+from telethon.errors import FloodWaitError
 from telethon.tl.functions.messages import SendReactionRequest
 from telethon.tl.types import ReactionCustomEmoji
 
@@ -91,8 +93,9 @@ REACTION_EMOJIS = [
 
 client = TelegramClient("userbot", API_ID, API_HASH)
 
-# Ключ: (chat_id, msg_id) → asyncio.Task
+# Только одна активная сессия в любой момент
 active: dict[tuple, asyncio.Task] = {}
+_lock = asyncio.Lock()
 
 
 def log(msg: str):
@@ -140,8 +143,8 @@ async def cmd_start(event):
         f"📦 Кадров: <b>{len(REACTION_EMOJIS)}</b>\n"
         f"▶️ Активных сессий: <b>{n}</b>\n\n"
         "/launch (reply) — start animation on the replied-to message\n"
-        "/stop — остановить все сессии в этом чате\n"
-        "/stopall — остановить вообще всё",
+        "/stop — stop playback\n"
+        "/start — show status",
         parse_mode="html"
     )
 
@@ -152,14 +155,14 @@ async def cmd_launch(event):
         await event.reply("↩️ Reply to a message to launch the animation on it.")
         return
 
+    if active:
+        await event.reply("⏳ Already playing. Use /stop first.")
+        return
+
     target_msg_id = event.reply_to_msg_id
     peer      = await event.get_input_chat()
     chat_id   = event.chat_id
     key       = (chat_id, target_msg_id)
-
-    if key in active:
-        await event.reply("▶️ Эта сессия уже запущена!")
-        return
 
     # Получаем читаемое имя чата для логов
     try:
@@ -174,25 +177,14 @@ async def cmd_launch(event):
     active[key] = task
 
 
-@client.on(events.NewMessage(outgoing=True, pattern=r"^/stop$"))
+@client.on(events.NewMessage(outgoing=True, pattern=r"^/stop(all)?$"))
 async def cmd_stop(event):
-    chat_id = event.chat_id
-    keys = [k for k in active if k[0] == chat_id]
-    if not keys:
-        await event.reply("💤 В этом чате ничего не запущено.")
+    if not active:
+        await event.reply("💤 Nothing is playing.")
         return
-    for k in keys:
-        active.pop(k, None)
-    await event.reply(f"🛑 Остановлено сессий: {len(keys)}")
-    log(f"■ Стоп (команда) | чат={chat_id} | сессий={len(keys)}")
-
-
-@client.on(events.NewMessage(outgoing=True, pattern=r"^/stopall$"))
-async def cmd_stopall(event):
-    n = len(active)
     active.clear()
-    await event.reply(f"🛑 Остановлено всего: {n} сессий")
-    log(f"■ Стоп (все) | сессий={n}")
+    await event.reply("🛑 Stopped.")
+    log("■ Стоп (команда)")
 
 
 async def main():
