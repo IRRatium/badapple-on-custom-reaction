@@ -1,0 +1,22 @@
+# Сессия Telethon
+*.session
+*.session-journal
+
+# Переменные окружения
+.env
+
+# Временные кадры
+temp_reaction_tiles/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
