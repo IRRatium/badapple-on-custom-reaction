@@ -139,8 +139,7 @@ async def cmd_start(event):
         "👋 <b>Bad Apple Reaction Player</b>\n\n"
         f"📦 Кадров: <b>{len(REACTION_EMOJIS)}</b>\n"
         f"▶️ Активных сессий: <b>{n}</b>\n\n"
-        "/launch — реакция на это сообщение\n"
-        "/launch (ответом) — реакция на то сообщение\n"
+        "/launch (reply) — start animation on the replied-to message\n"
         "/stop — остановить все сессии в этом чате\n"
         "/stopall — остановить вообще всё",
         parse_mode="html"
@@ -149,7 +148,11 @@ async def cmd_start(event):
 
 @client.on(events.NewMessage(outgoing=True, pattern=r"^/launch$"))
 async def cmd_launch(event):
-    target_msg_id = event.reply_to_msg_id if event.reply_to_msg_id else event.id
+    if not event.reply_to_msg_id:
+        await event.reply("↩️ Reply to a message to launch the animation on it.")
+        return
+
+    target_msg_id = event.reply_to_msg_id
     peer      = await event.get_input_chat()
     chat_id   = event.chat_id
     key       = (chat_id, target_msg_id)
