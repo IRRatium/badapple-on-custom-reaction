@@ -1,15 +1,15 @@
 # 🍎 Bad Apple via Telegram Reactions
 
-Проигрывает анимацию Bad Apple через кастомные эмодзи-реакции на любое сообщение в Telegram — прямо из-под юзербота.
+Plays Bad Apple animation through custom emoji reactions on any Telegram message — powered by a userbot.
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![Telethon](https://img.shields.io/badge/telethon-latest-green)
 
-## Как это работает
+## How it works
 
-Каждый кадр анимации закодирован как кастомный эмодзи. Юзербот последовательно ставит реакции на выбранное сообщение — одна реакция в секунду заменяет другую, создавая иллюзию воспроизведения.
+Each frame of the animation is encoded as a custom emoji. The userbot sequentially sets reactions on a chosen message — one reaction replaces another every 3 seconds, creating the illusion of playback.
 
-## Установка
+## Installation
 
 ```bash
 git clone https://github.com/IRRatium/badapple-on-custom-reaction
@@ -17,49 +17,102 @@ cd badapple-on-custom-reaction
 pip install telethon python-dotenv
 ```
 
-Создай `.env`:
+Create a `.env` file:
 
 ```env
 API_ID=12345678
 API_HASH=your_api_hash_here
 ```
 
-`API_ID` и `API_HASH` берёшь на [my.telegram.org](https://my.telegram.org).
+Get `API_ID` and `API_HASH` at [my.telegram.org](https://my.telegram.org).
 
-## Запуск
+## Running
 
 ```bash
 python player.py
 ```
 
-При первом запуске Telethon попросит номер телефона, код и 2FA (если есть). Сессия сохранится в `userbot.session` и больше спрашивать не будет.
+On first launch Telethon will ask for your phone number, code, and 2FA (if set). The session is saved to `userbot.session` and won't ask again.
 
-## Управление
+## Commands
 
-Команды отправляются **от себя** в любом чате (юзербот слушает только исходящие сообщения).
+Commands are sent **from your own account** in any chat (the userbot only listens to outgoing messages).
 
-| Команда | Действие |
+| Command | Action |
 |---|---|
-| `/launch` | Запустить реакцию на само это сообщение |
-| `/launch` *(ответом на сообщение)* | Запустить реакцию на то сообщение |
-| `/stop` | Остановить все сессии в текущем чате |
-| `/stopall` | Остановить все сессии во всех чатах |
-| `/start` | Показать статус |
+| `/launch` | Start animation on this message |
+| `/launch` *(as a reply)* | Start animation on the replied-to message |
+| `/stop` | Stop all sessions in the current chat |
+| `/stopall` | Stop all sessions everywhere |
+| `/start` | Show status |
 
-Можно запускать одновременно в нескольких чатах — сессии работают независимо.
+Multiple chats can run simultaneously — sessions are fully independent.
 
-## Структура проекта
+---
+
+## 🎞 Cutter (cutter.py)
+
+A Telegram bot that takes a video and automatically produces a ready-to-use `REACTION_EMOJIS` array for the player.
+
+### How it works
+
+1. Receives a video from the user
+2. Splits it into 3-second chunks using `ffmpeg`
+3. Converts each chunk to a square 100×100 WebM (custom emoji format)
+4. Creates a private `custom_emoji` sticker pack and uploads all chunks
+5. Returns an `emojis.txt` file with the array ready to paste into `player.py`
+
+### Installation
+
+```bash
+pip install python-telegram-bot python-dotenv
+```
+
+`ffmpeg` and `ffprobe` are required:
+
+```bash
+# Debian/Ubuntu
+sudo apt install ffmpeg
+
+# Arch
+sudo pacman -S ffmpeg
+
+# macOS
+brew install ffmpeg
+```
+
+Add to `.env`:
+
+```env
+CUTTER_TOKEN=your_cutter_bot_token
+```
+
+Create the bot via [@BotFather](https://t.me/BotFather). The user sending the video must be the owner of the sticker pack being created.
+
+### Running
+
+```bash
+python cutter.py
+```
+
+Send any video to the bot — you'll get back an `emojis.txt` file with the ready array and a link to the created pack. Paste the contents into `player.py` as `REACTION_EMOJIS`.
+
+---
+
+## Project structure
 
 ```
 .
-├── player.py            # Основной скрипт
-├── cutter/              # Инструмент для нарезки видео на кадры-эмодзи
-├── temp_reaction_tiles/ # Временные кадры (в .gitignore)
-├── .env                 # Токены (в .gitignore)
-└── userbot.session      # Сессия Telethon (в .gitignore)
+├── player.py            # Userbot player
+├── cutter.py            # Cutter bot
+├── temp_reaction_tiles/ # Temporary frames during cutting (.gitignore)
+├── .env                 # Secrets (.gitignore)
+├── .env.example         # Config example
+└── userbot.session      # Telethon session (.gitignore)
 ```
 
-## Требования
+## Requirements
 
 - Python 3.10+
-- Аккаунт Telegram с подпиской **Telegram Premium** (для кастомных реакций)
+- ffmpeg (for the cutter)
+- Telegram account with **Telegram Premium** (required for custom emoji reactions)
