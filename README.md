@@ -40,13 +40,12 @@ Commands are sent **from your own account** in any chat (the userbot only listen
 
 | Command | Action |
 |---|---|
-| `/launch` | Start animation on this message |
 | `/launch` *(as a reply)* | Start animation on the replied-to message |
 | `/stop` | Stop all sessions in the current chat |
 | `/stopall` | Stop all sessions everywhere |
 | `/start` | Show status |
 
-Multiple chats can run simultaneously — sessions are fully independent.
+`/launch` **must be sent as a reply** — the animation plays as a reaction on whichever message you replied to. This way you can target any message in any chat without any extra configuration.
 
 ---
 
