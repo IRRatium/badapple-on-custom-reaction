@@ -1,5 +1,11 @@
 # 🍎 Bad Apple via Telegram Reactions
 
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=dVx61BrTRj0">
+    <img src="https://img.youtube.com/vi/dVx61BrTRj0/hqdefault.jpg" alt="Смотреть Bad Apple!!" width="600">
+  </a>
+</p>
+
 Plays Bad Apple animation through custom emoji reactions on any Telegram message — powered by a userbot.
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
