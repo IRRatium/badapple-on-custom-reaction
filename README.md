@@ -1,19 +1,27 @@
-# 🍎 Bad Apple via Telegram Reactions
+# 🍎 Bad Apple via Telegram
 
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=dVx61BrTRj0">
-    <img src="https://img.youtube.com/vi/dVx61BrTRj0/hqdefault.jpg" alt="Смотреть Bad Apple!!" width="600">
-  </a>
-</p>
+[![Смотреть Bad Apple!!](https://img.youtube.com/vi/dVx61BrTRj0/hqdefault.jpg)](https://www.youtube.com/watch?v=dVx61BrTRj0)
 
-Plays Bad Apple animation through custom emoji reactions on any Telegram message — powered by a userbot.
+Plays the Bad Apple animation through Telegram — powered by a userbot.  
+Two playback modes are available:
 
-![Python](https://img.shields.io/badge/python-3.10+-blue)
+| Mode | File | Where it plays |
+|------|------|----------------|
+| **Reactions** | `reaction.py` | Custom emoji reactions on any message |
+| **Status** | `status.py` | Custom emoji in your profile status |
+
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Telethon](https://img.shields.io/badge/telethon-latest-green)
+
+---
 
 ## How it works
 
-Each frame of the animation is encoded as a custom emoji. The userbot sequentially sets reactions on a chosen message — one reaction replaces another every 3 seconds, creating the illusion of playback.
+**reaction.py** — Each frame of the animation is a custom emoji. The userbot sequentially sets reactions on a chosen message, replacing one emoji with another every few seconds to create the illusion of playback.
+
+**status.py** — Same idea, but the emoji is set as your Telegram profile status emoji, so the animation plays directly on your avatar.
+
+---
 
 ## Installation
 
@@ -32,20 +40,22 @@ API_HASH=your_api_hash_here
 
 Get `API_ID` and `API_HASH` at [my.telegram.org](https://my.telegram.org).
 
+---
+
 ## Running
 
+### Reaction player
+
+Plays the animation as reactions on a message.
+
 ```bash
-python player.py
+python reaction.py
 ```
-
-On first launch Telethon will ask for your phone number, code, and 2FA (if set). The session is saved to `userbot.session` and won't ask again.
-
-## Commands
 
 Commands are sent **from your own account** in any chat (the userbot only listens to outgoing messages).
 
 | Command | Action |
-|---|---|
+|---------|--------|
 | `/launch` *(as a reply)* | Start animation on the replied-to message |
 | `/stop` | Stop playback |
 | `/start` | Show status |
@@ -54,17 +64,27 @@ Only one animation can play at a time. `/launch` is blocked while another sessio
 
 ---
 
+### Status player
+
+Plays the animation as your profile status emoji.
+
+```bash
+python status.py
+```
+
+---
+
 ## 🎞 Cutter (cutter.py)
 
-A Telegram bot that takes a video and automatically produces a ready-to-use `REACTION_EMOJIS` array for the player.
+A Telegram bot that takes a video and automatically produces a ready-to-use `REACTION_EMOJIS` array for the players.
 
 ### How it works
 
 1. Receives a video from the user
-2. Splits it into 3-second chunks using `ffmpeg`
+2. Splits it into chunks using `ffmpeg`
 3. Converts each chunk to a square 100×100 WebM (custom emoji format)
 4. Creates a private `custom_emoji` sticker pack and uploads all chunks
-5. Returns an `emojis.txt` file with the array ready to paste into `player.py`
+5. Returns an `emojis.txt` file with the array ready to paste into the player
 
 ### Installation
 
@@ -99,7 +119,7 @@ Create the bot via [@BotFather](https://t.me/BotFather). The user sending the vi
 python cutter.py
 ```
 
-Send any video to the bot — you'll get back an `emojis.txt` file with the ready array and a link to the created pack. Paste the contents into `player.py` as `REACTION_EMOJIS`.
+Send any video to the bot — you'll get back an `emojis.txt` file with the ready array and a link to the created pack. Paste the contents into the player as `REACTION_EMOJIS`.
 
 ---
 
@@ -107,7 +127,8 @@ Send any video to the bot — you'll get back an `emojis.txt` file with the read
 
 ```
 .
-├── player.py            # Userbot player
+├── reaction.py          # Userbot player — reactions on a message
+├── status.py            # Userbot player — profile status emoji
 ├── cutter.py            # Cutter bot
 ├── temp_reaction_tiles/ # Temporary frames during cutting (.gitignore)
 ├── .env                 # Secrets (.gitignore)
@@ -115,8 +136,10 @@ Send any video to the bot — you'll get back an `emojis.txt` file with the read
 └── userbot.session      # Telethon session (.gitignore)
 ```
 
+---
+
 ## Requirements
 
 - Python 3.10+
 - ffmpeg (for the cutter)
-- Telegram account with **Telegram Premium** (required for custom emoji reactions)
+- Telegram account with **Telegram Premium** (required for custom emoji reactions and status)
