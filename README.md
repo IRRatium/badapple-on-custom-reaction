@@ -1,6 +1,15 @@
 # 🍎 Bad Apple via Telegram
 
-[![Смотреть Bad Apple!!](https://img.youtube.com/vi/dVx61BrTRj0/hqdefault.jpg)](https://www.youtube.com/watch?v=dVx61BrTRj0)
+<table>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=dVx61BrTRj0"><img src="https://img.youtube.com/vi/dVx61BrTRj0/hqdefault.jpg" alt="Bad Apple — Reactions"/></a></td>
+<td><a href="https://www.youtube.com/watch?v=CHtNMiuicRQ"><img src="https://img.youtube.com/vi/CHtNMiuicRQ/hqdefault.jpg" alt="Bad Apple — Status"/></a></td>
+</tr>
+<tr>
+<td align="center">Reactions (<code>reaction.py</code>)</td>
+<td align="center">Status (<code>status.py</code>)</td>
+</tr>
+</table>
 
 Plays the Bad Apple animation through Telegram — powered by a userbot.  
 Two playback modes are available:
