@@ -1,4 +1,4 @@
-# 🍎 Bad Apple on telegram premium empjis
+# 🍎 Bad Apple on telegram premium emojis
 
 <table>
 <tr>
